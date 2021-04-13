@@ -1,7 +1,6 @@
 import { Callback, InternalError, Wrapper } from '..';
-
+import { Request } from '../controllers';
 import { OPCODE } from '../tools';
-import { Requests } from '../controllers';
 
 export function RequestMiddleware(): Callback {
   return Wrapper(async (req, res, next) => {
@@ -17,7 +16,7 @@ export function RequestMiddleware(): Callback {
       );
     }
 
-    const request = await Requests.getRequestOrThrow(
+    const request = await Request.getRequestOrThrow(
       accessKey.platform,
       requestId
     );

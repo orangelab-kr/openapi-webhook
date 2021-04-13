@@ -1,7 +1,7 @@
 import { WebhookType } from '@prisma/client';
 import { Router } from 'express';
 import { OPCODE } from 'openapi-internal-sdk';
-import { Requests, Webhook, Wrapper } from '../../..';
+import { Request, Webhook, Wrapper } from '../../..';
 
 export function getInternalPlatformRequestRouter(): Router {
   const router = Router();
@@ -31,7 +31,7 @@ export function getInternalPlatformRequestRouter(): Router {
     '/',
     Wrapper(async (req, res) => {
       const { internal, body } = req;
-      await Requests.send(internal.platform, body);
+      await Request.send(internal.platform, body);
       res.json({ opcode: OPCODE.SUCCESS });
     })
   );

@@ -11,7 +11,7 @@ import { Webhook } from './webhook';
 
 const { prisma } = Database;
 
-export class Requests {
+export class Request {
   public static async send(
     platform: InternalPlatform,
     props: { type: WebhookType; data: any }
@@ -47,7 +47,7 @@ export class Requests {
     platform: InternalPlatform,
     requestId: string
   ): Promise<RequestModel> {
-    const request = await Requests.getRequest(platform, requestId);
+    const request = await Request.getRequest(platform, requestId);
     if (!request) {
       throw new InternalError(
         '해당 요청 기록을 찾을 수 없습니다.',

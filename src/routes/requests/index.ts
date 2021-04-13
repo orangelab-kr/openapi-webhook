@@ -1,12 +1,7 @@
-import {
-  RequestMiddleware,
-  Requests,
-  Wrapper,
-  getRequestsHistoriesRouter,
-} from '../..';
-
-import { OPCODE } from 'openapi-internal-sdk';
 import { Router } from 'express';
+import { OPCODE } from 'openapi-internal-sdk';
+import { getRequestsHistoriesRouter, RequestMiddleware, Wrapper } from '../..';
+import { Request } from '../../controllers';
 
 export * from './histories';
 
@@ -22,7 +17,7 @@ export function getRequestsRouter(): Router {
   router.get(
     '/',
     Wrapper(async (req, res) => {
-      const { total, requests } = await Requests.getRequests(
+      const { total, requests } = await Request.getRequests(
         req.query,
         req.accessKey.platform
       );

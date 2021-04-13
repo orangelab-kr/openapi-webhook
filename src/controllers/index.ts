@@ -1,4 +1,4 @@
 export * from './history';
 export * from './listener';
-export * from './requests';
+export * from './request';
 export * from './webhook';
