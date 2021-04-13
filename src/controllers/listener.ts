@@ -2,7 +2,7 @@ import { RequestModel } from '@prisma/client';
 import amqplib from 'amqplib';
 import { logger } from '..';
 
-export class WebhookListener {
+export class Listener {
   public static readonly exchange = 'requests';
   public static amqp?: amqplib.Connection;
   public static channel?: amqplib.Channel;

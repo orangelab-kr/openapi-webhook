@@ -6,7 +6,7 @@ import {
 } from '@prisma/client';
 import { InternalPlatform, OPCODE } from 'openapi-internal-sdk';
 import { Database, InternalError, Joi } from '../tools';
-import { WebhookListener } from './listener';
+import { Listener } from './listener';
 import { Webhook } from './webhook';
 
 const { prisma } = Database;
@@ -28,7 +28,7 @@ export class Requests {
     if (!webhook) return;
 
     const request = await this.createRequest(webhook, data);
-    await WebhookListener.sendQueue(request);
+    await Listener.sendQueue(request);
   }
 
   public static async createRequest(
