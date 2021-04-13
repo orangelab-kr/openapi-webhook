@@ -1,6 +1,5 @@
 import { Router } from 'express';
-import { getInternalPlatformRouter } from '../..';
-import { InternalPlatformMiddleware } from '../../middlewares';
+import { getInternalPlatformRouter, InternalPlatformMiddleware } from '../..';
 
 export * from './platform';
 

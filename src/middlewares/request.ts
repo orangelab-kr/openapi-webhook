@@ -1,6 +1,4 @@
-import { Callback, InternalError, Wrapper } from '..';
-import { Request } from '../controllers';
-import { OPCODE } from '../tools';
+import { Callback, InternalError, OPCODE, Request, Wrapper } from '..';
 
 export function RequestMiddleware(): Callback {
   return Wrapper(async (req, res, next) => {

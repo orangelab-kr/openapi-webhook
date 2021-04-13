@@ -1,8 +1,6 @@
-import { History } from '../../controllers/history';
-import { HistoryMiddleware } from '../../middlewares';
-import { OPCODE } from 'openapi-internal-sdk';
 import { Router } from 'express';
-import { Wrapper } from '../..';
+import { OPCODE } from 'openapi-internal-sdk';
+import { History, HistoryMiddleware, Wrapper } from '../..';
 
 export function getRequestsHistoriesRouter(): Router {
   const router = Router();

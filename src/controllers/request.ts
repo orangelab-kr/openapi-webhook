@@ -5,9 +5,8 @@ import {
   WebhookType,
 } from '@prisma/client';
 import { InternalPlatform, OPCODE } from 'openapi-internal-sdk';
-import { Database, InternalError, Joi } from '../tools';
-import { Listener } from './listener';
-import { Webhook } from './webhook';
+import { InternalError, Joi, Listener, Webhook } from '..';
+import { Database } from '../tools';
 
 const { prisma } = Database;
 

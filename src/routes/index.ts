@@ -1,18 +1,17 @@
+import express, { Application } from 'express';
+import morgan from 'morgan';
+import os from 'os';
 import {
+  getInternalRouter,
+  getRequestsRouter,
+  getSettingsRouter,
   InternalError,
   InternalMiddleware,
+  logger,
   OPCODE,
   PlatformMiddleware,
   Wrapper,
-  getInternalRouter,
-  getSettingsRouter,
-  logger,
 } from '..';
-import express, { Application } from 'express';
-
-import { getRequestsRouter } from './requests';
-import morgan from 'morgan';
-import os from 'os';
 
 export * from './internal';
 export * from './requests';

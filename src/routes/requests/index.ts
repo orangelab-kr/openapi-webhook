@@ -1,7 +1,11 @@
 import { Router } from 'express';
 import { OPCODE } from 'openapi-internal-sdk';
-import { getRequestsHistoriesRouter, RequestMiddleware, Wrapper } from '../..';
-import { Request } from '../../controllers';
+import {
+  getRequestsHistoriesRouter,
+  Request,
+  RequestMiddleware,
+  Wrapper,
+} from '../..';
 
 export * from './histories';
 
