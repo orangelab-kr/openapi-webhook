@@ -1,10 +1,9 @@
 export * from './permissions';
 export * from './platform';
 
-import { Callback, InternalError, Joi, OPCODE, Wrapper, logger } from '../..';
-
 import dayjs from 'dayjs';
 import jwt from 'jsonwebtoken';
+import { Callback, InternalError, Joi, logger, OPCODE, Wrapper } from '../..';
 
 export function InternalMiddleware(): Callback {
   return Wrapper(async (req, res, next) => {
@@ -20,7 +19,7 @@ export function InternalMiddleware(): Callback {
       );
     }
 
-    const key = process.env.HIKICK_OPENAPI_WEBHOOKS_KEY;
+    const key = process.env.HIKICK_OPENAPI_WEBHOOK_KEY;
     if (!key || !token) {
       throw new InternalError(
         '인증이 필요한 서비스입니다.',
@@ -31,7 +30,7 @@ export function InternalMiddleware(): Callback {
     try {
       const data = jwt.verify(token, key);
       const schema = Joi.object({
-        sub: Joi.string().valid('openapi-webhooks').required(),
+        sub: Joi.string().valid('openapi-webhook').required(),
         iss: Joi.string().required(),
         aud: Joi.string().email().required(),
         prs: Joi.string().required(),

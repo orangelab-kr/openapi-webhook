@@ -1,14 +1,13 @@
-import { Database, InternalError, Joi } from '../tools';
-import { InternalPlatform, OPCODE } from 'openapi-internal-sdk';
 import {
   Prisma,
   RequestModel,
   WebhookModel,
   WebhookType,
 } from '@prisma/client';
-
-import { Webhooks } from '.';
-import { WebhooksListener } from './listener';
+import { InternalPlatform, OPCODE } from 'openapi-internal-sdk';
+import { Database, InternalError, Joi } from '../tools';
+import { WebhookListener } from './listener';
+import { Webhook } from './webhook';
 
 const { prisma } = Database;
 
@@ -25,11 +24,11 @@ export class Requests {
     });
 
     const { type, data } = await schema.validateAsync(props);
-    const webhook = await Webhooks.getWebhookDoc(platform, type);
+    const webhook = await Webhook.getWebhookDoc(platform, type);
     if (!webhook) return;
 
     const request = await this.createRequest(webhook, data);
-    await WebhooksListener.sendQueue(request);
+    await WebhookListener.sendQueue(request);
   }
 
   public static async createRequest(
@@ -38,7 +37,7 @@ export class Requests {
   ): Promise<RequestModel> {
     const { webhookId } = webhook;
     const request = await prisma.requestModel.create({
-      data: { webhookId, data },
+      data: { webhookId, data: JSON.stringify(data) },
     });
 
     return request;

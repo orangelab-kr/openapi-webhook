@@ -1,11 +1,10 @@
-import { Database, Joi } from '../tools';
 import { WebhookModel, WebhookType } from '@prisma/client';
-
 import { InternalPlatform } from 'openapi-internal-sdk';
+import { Database, Joi } from '../tools';
 
 const { prisma } = Database;
 
-export class Webhooks {
+export class Webhook {
   public static async getWebhooks(
     platform: InternalPlatform
   ): Promise<{ type: WebhookType; url: string | null }[]> {
@@ -61,7 +60,7 @@ export class Webhooks {
   ): Promise<void> {
     const { platformId } = platform;
     url = await Joi.string().uri().allow('').optional().validateAsync(url);
-    if (!url) return Webhooks.deleteWebhook(platform, type);
+    if (!url) return Webhook.deleteWebhook(platform, type);
     const webhook = await prisma.webhookModel.findFirst({
       where: { platformId, type },
     });

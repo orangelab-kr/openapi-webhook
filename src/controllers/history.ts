@@ -1,8 +1,7 @@
 import { HistoryModel, Prisma, RequestModel } from '@prisma/client';
-import { InternalError, Joi, OPCODE } from '..';
-
-import { Database } from '../tools';
 import { InternalPlatform } from 'openapi-internal-sdk';
+import { InternalError, Joi, OPCODE } from '..';
+import { Database } from '../tools';
 
 const { prisma } = Database;
 
@@ -79,7 +78,7 @@ export class History {
       where.request = { webhook: { platformId } };
     }
 
-    const [total, history] = await prisma.$transaction([
+    const [total, histories] = await prisma.$transaction([
       prisma.historyModel.count({ where }),
       prisma.historyModel.findMany({
         take,
@@ -89,6 +88,6 @@ export class History {
       }),
     ]);
 
-    return { total, history };
+    return { total, histories };
   }
 }

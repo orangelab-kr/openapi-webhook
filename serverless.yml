@@ -1,4 +1,4 @@
-service: 'openapi-webhooks'
+service: 'openapi-webhook'
 useDotenv: false
 
 provider:

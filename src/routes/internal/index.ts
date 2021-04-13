@@ -1,6 +1,6 @@
-import { InternalPlatformMiddleware } from '../../middlewares';
 import { Router } from 'express';
 import { getInternalPlatformRouter } from '../..';
+import { InternalPlatformMiddleware } from '../../middlewares';
 
 export * from './platform';
 
@@ -13,10 +13,5 @@ export function getInternalRouter(): Router {
     getInternalPlatformRouter()
   );
 
-  /*
-  /:platformId/request
-  /:platformId/request
-  /:platformId/settings
-  */
   return router;
 }
