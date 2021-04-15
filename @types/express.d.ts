@@ -19,6 +19,8 @@ declare global {
         iat: Date;
         exp: Date;
         platform: InternalPlatform;
+        request: RequestModel;
+        history: HistoryModel;
       };
     }
   }

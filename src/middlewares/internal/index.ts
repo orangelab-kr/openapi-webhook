@@ -1,9 +1,12 @@
+export * from './history';
 export * from './permissions';
 export * from './platform';
+export * from './request';
+
+import { Callback, InternalError, Joi, OPCODE, Wrapper, logger } from '../..';
 
 import dayjs from 'dayjs';
 import jwt from 'jsonwebtoken';
-import { Callback, InternalError, Joi, logger, OPCODE, Wrapper } from '../..';
 
 export function InternalMiddleware(): Callback {
   return Wrapper(async (req, res, next) => {
