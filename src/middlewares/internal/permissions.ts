@@ -7,11 +7,12 @@ export enum PERMISSION {
   REQUESTS_SEND,
   REQUESTS_LIST,
   REQUESTS_VIEW,
+
+  HISTORIES_LIST,
+  HISTORIES_VIEW,
 }
 
-export default function InternalPermissionMiddleware(
-  permission: PERMISSION
-): Callback {
+export function InternalPermissionMiddleware(permission: PERMISSION): Callback {
   return Wrapper(async (req, res, next) => {
     if (!req.internal.prs[permission]) {
       throw new InternalError(

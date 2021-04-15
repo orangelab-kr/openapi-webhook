@@ -1,4 +1,6 @@
 import {
+  InternalPermissionMiddleware,
+  PERMISSION,
   Request,
   Wrapper,
   getInternalPlatformRequestsHistoriesRouter,
@@ -21,6 +23,7 @@ export function getInternalPlatformRequestsRouter(): Router {
 
   router.get(
     '/',
+    InternalPermissionMiddleware(PERMISSION.REQUESTS_LIST),
     Wrapper(async (req, res) => {
       const { total, requests } = await Request.getRequests(
         req.query,
@@ -31,8 +34,18 @@ export function getInternalPlatformRequestsRouter(): Router {
     })
   );
 
+  router.post(
+    '/',
+    InternalPermissionMiddleware(PERMISSION.REQUESTS_SEND),
+    Wrapper(async (req, res) => {
+      await Request.send(req.internal.platform, req.body);
+      res.json({ opcode: OPCODE.SUCCESS });
+    })
+  );
+
   router.get(
     '/:requestId',
+    InternalPermissionMiddleware(PERMISSION.REQUESTS_VIEW),
     InternalRequestMiddleware(),
     Wrapper(async (req, res) => {
       const { request } = req.internal;

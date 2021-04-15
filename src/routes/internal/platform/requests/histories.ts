@@ -1,6 +1,10 @@
 import { History, Wrapper } from '../../../..';
+import {
+  InternalHistoryMiddleware,
+  InternalPermissionMiddleware,
+  PERMISSION,
+} from '../../../../middlewares';
 
-import { InternalHistoryMiddleware } from '../../../../middlewares';
 import { OPCODE } from 'openapi-internal-sdk';
 import { Router } from 'express';
 
@@ -9,6 +13,7 @@ export function getInternalPlatformRequestsHistoriesRouter(): Router {
 
   router.get(
     '/',
+    InternalPermissionMiddleware(PERMISSION.HISTORIES_LIST),
     Wrapper(async (req, res) => {
       const { total, histories } = await History.getHistories(
         req.internal.request,
@@ -22,6 +27,7 @@ export function getInternalPlatformRequestsHistoriesRouter(): Router {
 
   router.get(
     '/:historyId',
+    InternalPermissionMiddleware(PERMISSION.HISTORIES_VIEW),
     InternalHistoryMiddleware(),
     Wrapper(async (req, res) => {
       const { history } = req.internal;

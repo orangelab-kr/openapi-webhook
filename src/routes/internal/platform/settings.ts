@@ -1,13 +1,20 @@
-import { WebhookType } from '@prisma/client';
-import { Router } from 'express';
+import {
+  InternalPermissionMiddleware,
+  PERMISSION,
+  Webhook,
+  Wrapper,
+} from '../../..';
+
 import { OPCODE } from 'openapi-internal-sdk';
-import { Webhook, Wrapper } from '../../..';
+import { Router } from 'express';
+import { WebhookType } from '@prisma/client';
 
 export function getInternalPlatformSettingsRouter(): Router {
   const router = Router();
 
   router.get(
     '/',
+    InternalPermissionMiddleware(PERMISSION.WEBHOOKS_VIEW),
     Wrapper(async (req, res) => {
       const { platform } = req.internal;
       const webhooks = await Webhook.getWebhooks(platform);
@@ -17,6 +24,7 @@ export function getInternalPlatformSettingsRouter(): Router {
 
   router.get(
     '/:type',
+    InternalPermissionMiddleware(PERMISSION.WEBHOOKS_VIEW),
     Wrapper(async (req, res) => {
       const webhook = await Webhook.getWebhook(
         req.internal.platform,
@@ -29,6 +37,7 @@ export function getInternalPlatformSettingsRouter(): Router {
 
   router.post(
     '/:type',
+    InternalPermissionMiddleware(PERMISSION.WEBHOOKS_SET),
     Wrapper(async (req, res) => {
       await Webhook.setWebhook(
         req.internal.platform,
