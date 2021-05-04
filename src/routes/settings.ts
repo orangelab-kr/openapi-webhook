@@ -1,7 +1,8 @@
-import { WebhookType } from '@prisma/client';
-import { Router } from 'express';
-import { OPCODE } from 'openapi-internal-sdk';
 import { Webhook, Wrapper } from '..';
+
+import { OPCODE } from 'openapi-internal-sdk';
+import { Router } from 'express';
+import { WebhookType } from '@prisma/client';
 
 export function getSettingsRouter(): Router {
   const router = Router();
@@ -9,7 +10,7 @@ export function getSettingsRouter(): Router {
   router.get(
     '/',
     Wrapper(async (req, res) => {
-      const { platform } = req.accessKey;
+      const { platform } = req.loggined;
       const webhooks = await Webhook.getWebhooks(platform);
       res.json({ opcode: OPCODE.SUCCESS, webhooks });
     })
@@ -19,7 +20,7 @@ export function getSettingsRouter(): Router {
     '/:type',
     Wrapper(async (req, res) => {
       const webhook = await Webhook.getWebhook(
-        req.accessKey.platform,
+        req.loggined.platform,
         req.params.type as WebhookType
       );
 
@@ -31,7 +32,7 @@ export function getSettingsRouter(): Router {
     '/:type',
     Wrapper(async (req, res) => {
       await Webhook.setWebhook(
-        req.accessKey.platform,
+        req.loggined.platform,
         req.params.type as WebhookType,
         req.body.url as string
       );
