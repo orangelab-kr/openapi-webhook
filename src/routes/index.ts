@@ -1,17 +1,19 @@
-import express, { Application } from 'express';
-import morgan from 'morgan';
-import os from 'os';
 import {
-  getInternalRouter,
-  getRequestsRouter,
-  getSettingsRouter,
   InternalError,
   InternalMiddleware,
-  logger,
   OPCODE,
   PlatformMiddleware,
   Wrapper,
+  getInternalRouter,
+  getRequestsRouter,
+  getSettingsRouter,
+  logger,
 } from '..';
+import express, { Application } from 'express';
+
+import cors from 'cors';
+import morgan from 'morgan';
+import os from 'os';
 
 export * from './internal';
 export * from './requests';
@@ -26,6 +28,7 @@ export function getRouter(): Application {
     stream: { write: (str: string) => logger.info(`${str.trim()}`) },
   });
 
+  router.use(cors());
   router.use(logging);
   router.use(express.json());
   router.use(express.urlencoded({ extended: true }));
