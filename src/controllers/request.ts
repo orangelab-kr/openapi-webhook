@@ -37,6 +37,7 @@ export class Request {
     const { webhookId } = webhook;
     const request = await prisma.requestModel.create({
       data: { webhookId, data: JSON.stringify(data) },
+      include: { webhook: true },
     });
 
     return request;
@@ -64,6 +65,7 @@ export class Request {
     const { platformId } = platform;
     const request = await prisma.requestModel.findFirst({
       where: { requestId, webhook: { platformId } },
+      include: { webhook: true },
     });
 
     return request;
@@ -90,14 +92,10 @@ export class Request {
       orderBySort: Joi.string().default('desc').valid('asc', 'desc').optional(),
     });
 
-    const {
-      take,
-      skip,
-      search,
-      orderByField,
-      orderBySort,
-    } = await schema.validateAsync(props);
+    const { take, skip, search, orderByField, orderBySort } =
+      await schema.validateAsync(props);
     const orderBy = { [orderByField]: orderBySort };
+    const include: Prisma.RequestModelInclude = { webhook: true };
     const where: Prisma.RequestModelWhereInput = {
       OR: [
         { requestId: search },
@@ -118,6 +116,7 @@ export class Request {
         skip,
         where,
         orderBy,
+        include,
       }),
     ]);
 
