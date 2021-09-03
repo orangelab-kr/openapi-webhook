@@ -5,12 +5,14 @@ import {
   WebhookType,
 } from '@prisma/client';
 import { InternalPlatform, OPCODE } from 'openapi-internal-sdk';
-import { InternalError, Joi, Listener, Webhook } from '..';
+import { InternalError, Joi, Listener, Webhook, logger } from '..';
 import { Database } from '../tools';
 
 const { prisma } = Database;
 
 export class Request {
+  public static requestInclude: Prisma.RequestModelInclude = { webhook: true };
+
   public static async send(
     platform: InternalPlatform,
     props: { type: WebhookType; data: any }
@@ -27,7 +29,7 @@ export class Request {
     if (!webhook) return;
 
     const request = await this.createRequest(webhook, data);
-    await Listener.sendQueue(request);
+    await Request.tryRequest(request);
   }
 
   public static async createRequest(
@@ -37,10 +39,24 @@ export class Request {
     const { webhookId } = webhook;
     const request = await prisma.requestModel.create({
       data: { webhookId, data: JSON.stringify(data) },
-      include: { webhook: true },
+      include: this.requestInclude,
     });
 
     return request;
+  }
+
+  public static async tryRequest(
+    request: RequestModel & { webhook?: WebhookModel }
+  ): Promise<void> {
+    if (request.completedAt || !request.webhook) {
+      throw new InternalError('이미 처리된 요청입니다.', OPCODE.ALREADY_EXISTS);
+    }
+
+    logger.info(
+      `${request.requestId}(${request.webhook.url}) - 요청을 시도하는 중입니다.`
+    );
+
+    await Listener.sendQueue(request);
   }
 
   public static async getRequestOrThrow(
@@ -65,7 +81,7 @@ export class Request {
     const { platformId } = platform;
     const request = await prisma.requestModel.findFirst({
       where: { requestId, webhook: { platformId } },
-      include: { webhook: true },
+      include: this.requestInclude,
     });
 
     return request;

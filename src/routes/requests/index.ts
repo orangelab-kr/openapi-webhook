@@ -40,5 +40,14 @@ export function getRequestsRouter(): Router {
     })
   );
 
+  router.get(
+    '/:requestId/retry',
+    RequestMiddleware(),
+    Wrapper(async (req, res) => {
+      await Request.tryRequest(req.request);
+      res.json({ opcode: OPCODE.SUCCESS });
+    })
+  );
+
   return router;
 }

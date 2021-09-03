@@ -53,5 +53,15 @@ export function getInternalPlatformRequestsRouter(): Router {
     })
   );
 
+  router.get(
+    '/:requestId/retry',
+    InternalPermissionMiddleware(PERMISSION.REQUESTS_SEND),
+    InternalRequestMiddleware(),
+    Wrapper(async (req, res) => {
+      await Request.tryRequest(req.internal.request);
+      res.json({ opcode: OPCODE.SUCCESS });
+    })
+  );
+
   return router;
 }
