@@ -1,4 +1,4 @@
-import { History, HistoryMiddleware, Wrapper } from '../..';
+import { History, HistoryMiddleware, PlatformMiddleware, Wrapper } from '../..';
 
 import { OPCODE } from 'openapi-internal-sdk';
 import { Router } from 'express';
@@ -8,6 +8,10 @@ export function getRequestsHistoriesRouter(): Router {
 
   router.get(
     '/',
+    PlatformMiddleware({
+      permissionIds: ['webhook.requests.histories.list'],
+      final: true,
+    }),
     Wrapper(async (req, res) => {
       const { total, histories } = await History.getHistories(
         req.request,
@@ -21,6 +25,10 @@ export function getRequestsHistoriesRouter(): Router {
 
   router.get(
     '/:historyId',
+    PlatformMiddleware({
+      permissionIds: ['webhook.requests.histories.view'],
+      final: true,
+    }),
     HistoryMiddleware(),
     Wrapper(async (req, res) => {
       const { history } = req;

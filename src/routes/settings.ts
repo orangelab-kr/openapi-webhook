@@ -1,4 +1,4 @@
-import { Webhook, Wrapper } from '..';
+import { PlatformMiddleware, Webhook, Wrapper } from '..';
 
 import { OPCODE } from 'openapi-internal-sdk';
 import { Router } from 'express';
@@ -9,6 +9,10 @@ export function getSettingsRouter(): Router {
 
   router.get(
     '/',
+    PlatformMiddleware({
+      permissionIds: ['webhook.settings.list'],
+      final: true,
+    }),
     Wrapper(async (req, res) => {
       const { platform } = req.loggined;
       const webhooks = await Webhook.getWebhooks(platform);
@@ -18,6 +22,10 @@ export function getSettingsRouter(): Router {
 
   router.get(
     '/:type',
+    PlatformMiddleware({
+      permissionIds: ['webhook.settings.view'],
+      final: true,
+    }),
     Wrapper(async (req, res) => {
       const webhook = await Webhook.getWebhook(
         req.loggined.platform,
@@ -30,6 +38,10 @@ export function getSettingsRouter(): Router {
 
   router.post(
     '/:type',
+    PlatformMiddleware({
+      permissionIds: ['webhook.settings.update'],
+      final: true,
+    }),
     Wrapper(async (req, res) => {
       await Webhook.setWebhook(
         req.loggined.platform,

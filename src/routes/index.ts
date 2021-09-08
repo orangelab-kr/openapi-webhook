@@ -6,7 +6,6 @@ import {
   InternalError,
   InternalMiddleware,
   OPCODE,
-  PlatformMiddleware,
   Wrapper,
 } from '..';
 import { clusterInfo } from '../tools';
@@ -20,8 +19,8 @@ export function getRouter(): Application {
   InternalError.registerSentry(router);
 
   router.use('/internal', InternalMiddleware(), getInternalRouter());
-  router.use('/settings', PlatformMiddleware(), getSettingsRouter());
-  router.use('/requests', PlatformMiddleware(), getRequestsRouter());
+  router.use('/settings', getSettingsRouter());
+  router.use('/requests', getRequestsRouter());
   router.get(
     '/',
     Wrapper(async (req, res) => {
