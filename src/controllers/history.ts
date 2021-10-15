@@ -1,9 +1,6 @@
 import { HistoryModel, Prisma, RequestModel } from '@prisma/client';
 import { InternalPlatform } from 'openapi-internal-sdk';
-import { InternalError, Joi, OPCODE } from '..';
-import { Database } from '../tools';
-
-const { prisma } = Database;
+import { InternalError, Joi, OPCODE, prisma } from '..';
 
 export class History {
   public static async getHistoryOrThrow(
@@ -55,13 +52,8 @@ export class History {
       orderBySort: Joi.string().default('desc').valid('asc', 'desc').optional(),
     });
 
-    const {
-      take,
-      skip,
-      search,
-      orderByField,
-      orderBySort,
-    } = await schema.validateAsync(props);
+    const { take, skip, search, orderByField, orderBySort } =
+      await schema.validateAsync(props);
     const { requestId } = request;
     const orderBy = { [orderByField]: orderBySort };
     const where: Prisma.HistoryModelWhereInput = {

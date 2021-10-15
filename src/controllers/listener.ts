@@ -19,7 +19,7 @@ export class Listener {
 
     this.channel = await this.amqp.createChannel();
     this.channel.assertExchange(this.exchange, 'topic');
-    logger.info('[RabbitMQ] 메세지 큐 서버와 연결되었습니다.');
+    logger.info('RabbitMQ / 메세지 큐 서버와 연결되었습니다.');
   }
 
   public static async sendQueue(request: RequestModel): Promise<void> {

@@ -5,10 +5,7 @@ import {
   WebhookType,
 } from '@prisma/client';
 import { InternalPlatform, OPCODE } from 'openapi-internal-sdk';
-import { InternalError, Joi, Listener, Webhook, logger } from '..';
-import { Database } from '../tools';
-
-const { prisma } = Database;
+import { InternalError, Joi, Listener, logger, prisma, Webhook } from '..';
 
 export class Request {
   public static requestInclude: Prisma.RequestModelInclude = { webhook: true };

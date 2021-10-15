@@ -1,8 +1,6 @@
 import { WebhookModel, WebhookType } from '@prisma/client';
 import { InternalPlatform } from 'openapi-internal-sdk';
-import { Database, Joi } from '../tools';
-
-const { prisma } = Database;
+import { Joi, prisma } from '..';
 
 export class Webhook {
   public static async getWebhooks(
