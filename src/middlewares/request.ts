@@ -1,6 +1,6 @@
-import { Callback, InternalError, OPCODE, Request, Wrapper } from '..';
+import { WrapperCallback, Request, RESULT, Wrapper } from '..';
 
-export function RequestMiddleware(): Callback {
+export function RequestMiddleware(): WrapperCallback {
   return Wrapper(async (req, res, next) => {
     const {
       loggined: { platform },
@@ -8,10 +8,7 @@ export function RequestMiddleware(): Callback {
     } = req;
 
     if (typeof requestId !== 'string' || !platform) {
-      throw new InternalError(
-        '해당 요청 기록을 찾을 수 없습니다.',
-        OPCODE.NOT_FOUND
-      );
+      throw RESULT.CANNOT_FIND_REQUEST();
     }
 
     const request = await Request.getRequestOrThrow(platform, requestId);

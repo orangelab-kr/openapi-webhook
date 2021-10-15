@@ -4,8 +4,8 @@ import {
   WebhookModel,
   WebhookType,
 } from '@prisma/client';
-import { InternalPlatform, OPCODE } from 'openapi-internal-sdk';
-import { InternalError, Joi, Listener, logger, prisma, Webhook } from '..';
+import { InternalPlatform } from 'openapi-internal-sdk';
+import { Joi, Listener, logger, prisma, RESULT, Webhook } from '..';
 
 export class Request {
   public static requestInclude: Prisma.RequestModelInclude = { webhook: true };
@@ -46,7 +46,7 @@ export class Request {
     request: RequestModel & { webhook?: WebhookModel }
   ): Promise<void> {
     if (request.completedAt || !request.webhook) {
-      throw new InternalError('이미 처리된 요청입니다.', OPCODE.ALREADY_EXISTS);
+      throw RESULT.ALREADY_PROCESSED_REQUEST();
     }
 
     logger.info(
@@ -61,13 +61,7 @@ export class Request {
     requestId: string
   ): Promise<RequestModel> {
     const request = await Request.getRequest(platform, requestId);
-    if (!request) {
-      throw new InternalError(
-        '해당 요청 기록을 찾을 수 없습니다.',
-        OPCODE.NOT_FOUND
-      );
-    }
-
+    if (!request) throw RESULT.CANNOT_FIND_REQUEST();
     return request;
   }
 

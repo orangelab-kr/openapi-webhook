@@ -1,6 +1,6 @@
 import { HistoryModel, Prisma, RequestModel } from '@prisma/client';
 import { InternalPlatform } from 'openapi-internal-sdk';
-import { InternalError, Joi, OPCODE, prisma } from '..';
+import { Joi, prisma, RESULT } from '..';
 
 export class History {
   public static async getHistoryOrThrow(
@@ -8,13 +8,7 @@ export class History {
     historyId: string
   ): Promise<HistoryModel> {
     const history = await History.getHistory(request, historyId);
-    if (!history) {
-      throw new InternalError(
-        '해당 요청 상세 기록을 찾을 수 없습니다.',
-        OPCODE.NOT_FOUND
-      );
-    }
-
+    if (!history) throw RESULT.CANNOT_FIND_REQUEST_HISTORY();
     return history;
   }
 

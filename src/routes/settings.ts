@@ -1,8 +1,6 @@
-import { PlatformMiddleware, Webhook, Wrapper } from '..';
-
-import { OPCODE } from 'openapi-internal-sdk';
-import { Router } from 'express';
 import { WebhookType } from '@prisma/client';
+import { Router } from 'express';
+import { PlatformMiddleware, RESULT, Webhook, Wrapper } from '..';
 
 export function getSettingsRouter(): Router {
   const router = Router();
@@ -13,10 +11,10 @@ export function getSettingsRouter(): Router {
       permissionIds: ['webhook.settings.list'],
       final: true,
     }),
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const { platform } = req.loggined;
       const webhooks = await Webhook.getWebhooks(platform);
-      res.json({ opcode: OPCODE.SUCCESS, webhooks });
+      throw RESULT.SUCCESS({ details: { webhooks } });
     })
   );
 
@@ -26,13 +24,13 @@ export function getSettingsRouter(): Router {
       permissionIds: ['webhook.settings.view'],
       final: true,
     }),
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const webhook = await Webhook.getWebhook(
         req.loggined.platform,
         req.params.type as WebhookType
       );
 
-      res.json({ opcode: OPCODE.SUCCESS, webhook });
+      throw RESULT.SUCCESS({ details: { webhook } });
     })
   );
 
@@ -42,14 +40,14 @@ export function getSettingsRouter(): Router {
       permissionIds: ['webhook.settings.update'],
       final: true,
     }),
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       await Webhook.setWebhook(
         req.loggined.platform,
         req.params.type as WebhookType,
         req.body.url as string
       );
 
-      res.json({ opcode: OPCODE.SUCCESS });
+      throw RESULT.SUCCESS();
     })
   );
 

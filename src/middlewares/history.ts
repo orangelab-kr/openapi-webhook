@@ -1,6 +1,6 @@
-import { Callback, History, InternalError, OPCODE, Wrapper } from '..';
+import { WrapperCallback, History, RESULT, Wrapper } from '..';
 
-export function HistoryMiddleware(): Callback {
+export function HistoryMiddleware(): WrapperCallback {
   return Wrapper(async (req, res, next) => {
     const {
       request,
@@ -8,10 +8,7 @@ export function HistoryMiddleware(): Callback {
     } = req;
 
     if (typeof historyId !== 'string' || !request) {
-      throw new InternalError(
-        '해당 요청 상세 기록을 찾을 수 없습니다.',
-        OPCODE.NOT_FOUND
-      );
+      throw RESULT.CANNOT_FIND_REQUEST_HISTORY();
     }
 
     const history = await History.getHistoryOrThrow(request, historyId);

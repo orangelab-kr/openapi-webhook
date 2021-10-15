@@ -1,14 +1,13 @@
+import { Router } from 'express';
 import {
+  getInternalPlatformRequestsHistoriesRouter,
   InternalPermissionMiddleware,
+  InternalRequestMiddleware,
   PERMISSION,
   Request,
+  RESULT,
   Wrapper,
-  getInternalPlatformRequestsHistoriesRouter,
 } from '../../../..';
-
-import { InternalRequestMiddleware } from '../../../../middlewares';
-import { OPCODE } from 'openapi-internal-sdk';
-import { Router } from 'express';
 
 export * from './histories';
 
@@ -24,22 +23,22 @@ export function getInternalPlatformRequestsRouter(): Router {
   router.get(
     '/',
     InternalPermissionMiddleware(PERMISSION.REQUESTS_LIST),
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const { total, requests } = await Request.getRequests(
         req.query,
         req.internal.platform
       );
 
-      res.json({ opcode: OPCODE.SUCCESS, requests, total });
+      throw RESULT.SUCCESS({ details: { requests, total } });
     })
   );
 
   router.post(
     '/',
     InternalPermissionMiddleware(PERMISSION.REQUESTS_SEND),
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       await Request.send(req.internal.platform, req.body);
-      res.json({ opcode: OPCODE.SUCCESS });
+      throw RESULT.SUCCESS();
     })
   );
 
@@ -47,9 +46,9 @@ export function getInternalPlatformRequestsRouter(): Router {
     '/:requestId',
     InternalPermissionMiddleware(PERMISSION.REQUESTS_VIEW),
     InternalRequestMiddleware(),
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const { request } = req.internal;
-      res.json({ opcode: OPCODE.SUCCESS, request });
+      throw RESULT.SUCCESS({ details: { request } });
     })
   );
 
@@ -57,9 +56,9 @@ export function getInternalPlatformRequestsRouter(): Router {
     '/:requestId/retry',
     InternalPermissionMiddleware(PERMISSION.REQUESTS_SEND),
     InternalRequestMiddleware(),
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       await Request.tryRequest(req.internal.request);
-      res.json({ opcode: OPCODE.SUCCESS });
+      throw RESULT.SUCCESS();
     })
   );
 

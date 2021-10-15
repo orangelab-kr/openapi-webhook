@@ -1,13 +1,12 @@
+import { Router } from 'express';
 import {
-  Request,
-  RequestMiddleware,
-  Wrapper,
   getRequestsHistoriesRouter,
   PlatformMiddleware,
+  Request,
+  RequestMiddleware,
+  RESULT,
+  Wrapper,
 } from '../..';
-
-import { OPCODE } from 'openapi-internal-sdk';
-import { Router } from 'express';
 
 export * from './histories';
 
@@ -30,13 +29,13 @@ export function getRequestsRouter(): Router {
       permissionIds: ['webhook.requests.list'],
       final: true,
     }),
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const { total, requests } = await Request.getRequests(
         req.query,
         req.loggined.platform
       );
 
-      res.json({ opcode: OPCODE.SUCCESS, requests, total });
+      throw RESULT.SUCCESS({ details: { requests, total } });
     })
   );
 
@@ -47,9 +46,9 @@ export function getRequestsRouter(): Router {
       final: true,
     }),
     RequestMiddleware(),
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const { request } = req;
-      res.json({ opcode: OPCODE.SUCCESS, request });
+      throw RESULT.SUCCESS({ details: { request } });
     })
   );
 
@@ -60,9 +59,9 @@ export function getRequestsRouter(): Router {
       final: true,
     }),
     RequestMiddleware(),
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       await Request.tryRequest(req.request);
-      res.json({ opcode: OPCODE.SUCCESS });
+      throw RESULT.SUCCESS();
     })
   );
 

@@ -1,7 +1,11 @@
-import { History, HistoryMiddleware, PlatformMiddleware, Wrapper } from '../..';
-
-import { OPCODE } from 'openapi-internal-sdk';
 import { Router } from 'express';
+import {
+  History,
+  HistoryMiddleware,
+  PlatformMiddleware,
+  RESULT,
+  Wrapper,
+} from '../..';
 
 export function getRequestsHistoriesRouter(): Router {
   const router = Router();
@@ -12,14 +16,14 @@ export function getRequestsHistoriesRouter(): Router {
       permissionIds: ['webhook.requests.histories.list'],
       final: true,
     }),
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const { total, histories } = await History.getHistories(
         req.request,
         req.query,
         req.loggined.platform
       );
 
-      res.json({ opcode: OPCODE.SUCCESS, histories, total });
+      throw RESULT.SUCCESS({ details: { histories, total } });
     })
   );
 
@@ -30,9 +34,9 @@ export function getRequestsHistoriesRouter(): Router {
       final: true,
     }),
     HistoryMiddleware(),
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const { history } = req;
-      res.json({ opcode: OPCODE.SUCCESS, history });
+      throw RESULT.SUCCESS({ details: { history } });
     })
   );
 
