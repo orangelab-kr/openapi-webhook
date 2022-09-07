@@ -1,10 +1,11 @@
+import { InternalPlatform } from '@hikick/openapi-internal-sdk';
 import {
   Prisma,
   RequestModel,
   WebhookModel,
   WebhookType,
 } from '@prisma/client';
-import { InternalPlatform } from '@hikick/openapi-internal-sdk';
+import dayjs from 'dayjs';
 import { Joi, Listener, logger, prisma, RESULT, Webhook } from '..';
 
 export class Request {
@@ -27,6 +28,7 @@ export class Request {
 
     const request = await this.createRequest(webhook, data);
     await Request.tryRequest(request);
+    await Request.checkUncompletedRequest();
   }
 
   public static async createRequest(
@@ -40,6 +42,22 @@ export class Request {
     });
 
     return request;
+  }
+
+  public static async checkUncompletedRequest(): Promise<void> {
+    const startedAt = dayjs().subtract(1, 'hours').toDate();
+    const endedAt = dayjs().subtract(1, 'minutes').toDate();
+    const requests = await prisma.requestModel.findMany({
+      include: { webhook: true },
+      where: {
+        completedAt: null,
+        histories: { none: {} },
+        createdAt: { gte: startedAt, lte: endedAt },
+      },
+    });
+
+    const promises = requests.map((r) => this.tryRequest(r));
+    await Promise.all(promises);
   }
 
   public static async tryRequest(
