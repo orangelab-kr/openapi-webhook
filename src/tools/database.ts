@@ -8,7 +8,7 @@ declare global {
 function createPrismaClient(): PrismaClient {
   if (global.prisma) return global.prisma;
   global.prisma = new PrismaClient();
-  return prisma;
+  return global.prisma;
 }
 
 export const prisma = createPrismaClient();
