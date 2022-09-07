@@ -1,5 +1,5 @@
 import { WebhookModel, WebhookType } from '@prisma/client';
-import { InternalPlatform } from 'openapi-internal-sdk';
+import { InternalPlatform } from '@hikick/openapi-internal-sdk';
 import { Joi, prisma } from '..';
 
 export class Webhook {
