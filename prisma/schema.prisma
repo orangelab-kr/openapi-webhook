@@ -25,14 +25,13 @@ model WebhookModel {
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
 }
 
 model RequestModel {
   requestId String @id @default(uuid())
 
   webhookId String
-  webhook   WebhookModel @relation(fields: [webhookId], references: [webhookId])
+  webhook   WebhookModel @relation(fields: [webhookId], references: [webhookId], onDelete: Cascade)
   data      String       @db.Text
 
   histories HistoryModel[]
@@ -40,18 +39,16 @@ model RequestModel {
   completedAt DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
 }
 
 model HistoryModel {
   historyId String @id @default(uuid())
 
   requestId String
-  request   RequestModel @relation(fields: [requestId], references: [requestId])
+  request   RequestModel @relation(fields: [requestId], references: [requestId], onDelete: Cascade)
 
   statusCode Int
   body       String @db.Text
 
   createdAt DateTime  @default(now())
-  deletedAt DateTime?
 }

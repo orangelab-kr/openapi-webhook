@@ -81,14 +81,9 @@ export function Wrapper(cb: WrapperCallback): WrapperCallback {
         result = RESULT.FAILED_VALIDATE({ details: { details } });
       }
 
-      if (!result) {
-        if (process.env.NODE_ENV !== 'prod') {
-          logger.error(err.message);
-          logger.error(err.stack);
-        }
-
-        result = RESULT.INVALID_ERROR();
-      }
+      if (!result) result = RESULT.INVALID_ERROR();
+      logger.error(err.message);
+      logger.error(err.stack);
 
       const { statusCode, opcode, details, reportable, args } = result;
       const message = result.message
