@@ -45,8 +45,8 @@ export class Request {
   }
 
   public static async checkUncompletedRequest(): Promise<void> {
-    const startedAt = dayjs().subtract(1, 'hours').toDate();
-    const endedAt = dayjs().subtract(1, 'minutes').toDate();
+    const startedAt = dayjs().subtract(3, 'hours').toDate();
+    const endedAt = dayjs().subtract(5, 'minutes').toDate();
     const requests = await prisma.requestModel.findMany({
       include: { webhook: true },
       where: {
